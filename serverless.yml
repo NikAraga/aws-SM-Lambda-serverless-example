@@ -84,7 +84,7 @@ functions:
     handler: lambda_function_1.lambda_handler
     memorySize: 256
     timeout: 400
-    role: arn:aws:iam::${self:aws-account-id}:role/${self:custom.lambda-role-name}
+    role: arn:aws:iam::${self:custom.aws-account-id}:role/${self:custom.lambda-role-name}
 #    vpc: ## Select VPC options if required
 #      securityGroupIds: ${self:custom.cbcap-lambda-sgs}
 #      subnetIds: ${self:custom.cbcap-lambda-subnets}
@@ -97,7 +97,7 @@ functions:
     handler: lambda_function_2.lambda_handler
     memorySize: 256
     timeout: 400
-    role: arn:aws:iam::${self:aws-account-id}:role/${self:custom.lambda-role-name}
+    role: arn:aws:iam::${self:custom.aws-account-id}:role/${self:custom.lambda-role-name}
     versionFunctions: false
     environment:  ## Lambda Function Environment Vars
       awsAccountID: ${self:custom.aws-account-id}
@@ -108,7 +108,7 @@ functions:
     handler: lambda_function_3.lambda_handler
     memorySize: 256
     timeout: 400
-    role: arn:aws:iam::${self:aws-account-id}:role/${self:custom.lambda-role-name}
+    role: arn:aws:iam::${self:custom.aws-account-id}:role/${self:custom.lambda-role-name}
     versionFunctions: false
     environment:  ## Lambda Function Environment Vars
       awsAccountID: ${self:custom.aws-account-id}
