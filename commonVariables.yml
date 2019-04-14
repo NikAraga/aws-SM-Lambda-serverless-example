@@ -1,0 +1,3 @@
+ops-account-id: "1234567890" ## AWS Account id
+lambda-role-name: LambdaExecutionRole ## IAM Role for Lambda Execution
+lambda-policy-name: 

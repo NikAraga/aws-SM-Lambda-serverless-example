@@ -1,0 +1,151 @@
+custom: ${file(commonVariables.yml)}
+
+service: DCS-UnusedResourceRemediation
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage}
+  region: ${opt:region}
+  versionFunctions: false
+
+resources:
+  AWSTemplateFormatVersion: '2010-09-09'
+  Description: Template to create Lambda execution role
+
+  Parameters:
+    LambdaExecutionRoleName:
+      Description: Provide the name of the IAM Role name to be created for Lambda execution
+      Type: String
+      Default: ${self:custom.lambda-role-name}
+    LambdaExecutionPolicyName:
+      Description: Provide the name of the IAM policy name to be created for Lambda
+        execution
+      Type: String
+      Default: ${self:custom.lambda-policy-name}
+
+  Outputs:
+    LambdaExecutionRoleArn:
+      Value:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
+
+  Resources:
+    LambdaConfigBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName:
+          Ref: LambdaConfigS3Bucket
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+    LambdaExecutionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName:
+          Ref: LambdaExecutionRoleName
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - lambda.amazonaws.com
+            Action:
+            - sts:AssumeRole
+        Path: "/"
+    LambdaRolePolicy:
+      Type: AWS::IAM::ManagedPolicy
+      DependsOn:
+      - LambdaExecutionRole
+      Properties:
+        ManagedPolicyName:
+          Ref: LambdaExecutionPolicyName
+        Roles:
+        - Ref: LambdaExecutionRole
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Sid: LambdaAssumeRolePolicy
+            Effect: Allow
+            Action:
+            - sts:*
+            Resource: "*"
+
+plugins:
+  - serverless-python-requirements
+  - serverless-step-functions
+  - serverless-pseudo-parameters
+
+functions:
+  TestLambdaFunction1:
+    name: test-python-lambda-function-1
+    handler: lambda_function_1.lambda_handler
+    memorySize: 256
+    timeout: 400
+    role: arn:aws:iam::${self:aws-account-id}:role/${self:custom.lambda-role-name}
+#    vpc: ## Select VPC options if required
+#      securityGroupIds: ${self:custom.cbcap-lambda-sgs}
+#      subnetIds: ${self:custom.cbcap-lambda-subnets}
+    versionFunctions: false
+    environment:  ## Lambda Function Environment Vars
+      awsAccountID: ${self:custom.aws-account-id}
+      defaultAwsRegion: ${self:provider.region}
+  TestLambdaFunction2:
+    name: test-python-lambda-function-2
+    handler: lambda_function_2.lambda_handler
+    memorySize: 256
+    timeout: 400
+    role: arn:aws:iam::${self:aws-account-id}:role/${self:custom.lambda-role-name}
+    versionFunctions: false
+    environment:  ## Lambda Function Environment Vars
+      awsAccountID: ${self:custom.aws-account-id}
+      defaultAwsRegion: ${self:provider.region}
+      Owner: firstname.lsastname
+  TestLambdaFunction3:
+    name: test-python-lambda-function-3
+    handler: lambda_function_3.lambda_handler
+    memorySize: 256
+    timeout: 400
+    role: arn:aws:iam::${self:aws-account-id}:role/${self:custom.lambda-role-name}
+    versionFunctions: false
+    environment:  ## Lambda Function Environment Vars
+      awsAccountID: ${self:custom.aws-account-id}
+      defaultAwsRegion: ${self:provider.region}
+      Owner: firstname.lsastname
+
+stepFunctions:
+  stateMachines:
+    TestStateMachine1:
+      name: test-state-machine-1
+      definition:
+        Comment: "A Sample State Machine using Serverless"
+        StartAt: STEP-1
+        States:
+          STEP-1:
+            Type: Task
+            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:test-python-lambda-function-1"
+            ResultPath: "$.status"
+            Next: ChoiceState
+          ChoiceState:
+            Type: Choice
+            Choices:
+            - Variable: "$.status"
+              BooleanEquals: true
+              Next: Choice-STEP-A
+            - Variable: "$.status"
+              BooleanEquals: false
+              Next: Choice-STEP-B
+          Choice-STEP-B:
+            Type: Pass
+            End: true
+          Choice-STEP-A:
+            Type: Task
+            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:test-python-lambda-function-2"
+            ResultPath: "$.status"
+            Next: STEP-2
+          STEP-2:
+            Type: Task
+            Resource: "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:test-python-lambda-function-3"
+            End: true
