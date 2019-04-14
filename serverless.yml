@@ -12,16 +12,11 @@ resources:
   AWSTemplateFormatVersion: '2010-09-09'
   Description: Template to create Lambda execution role
 
-  Parameters:
-    LambdaExecutionRoleName:
-      Description: Provide the name of the IAM Role name to be created for Lambda execution
-      Type: String
-      Default: ${self:custom.lambda-role-name}
-    LambdaExecutionPolicyName:
-      Description: Provide the name of the IAM policy name to be created for Lambda
-        execution
-      Type: String
-      Default: ${self:custom.lambda-policy-name}
+#  Parameters:  ## Add Parametes if needed
+#    LambdaExecutionRoleName:
+#      Description: Provide the name of the IAM Role name to be created for Lambda execution
+#      Type: String
+#      Default: ${self:custom.lambda-role-name}
 
   Outputs:
     LambdaExecutionRoleArn:
