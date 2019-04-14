@@ -1,6 +1,6 @@
 custom: ${file(commonVariables.yml)}
 
-service: DCS-UnusedResourceRemediation
+service: Serverless-CFT-Stack
 provider:
   name: aws
   runtime: python3.6
