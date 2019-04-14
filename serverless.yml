@@ -31,15 +31,6 @@ resources:
         - Arn
 
   Resources:
-    LambdaConfigBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName:
-          Ref: LambdaConfigS3Bucket
-        BucketEncryption:
-          ServerSideEncryptionConfiguration:
-            - ServerSideEncryptionByDefault:
-                SSEAlgorithm: AES256
     LambdaExecutionRole:
       Type: AWS::IAM::Role
       Properties:
