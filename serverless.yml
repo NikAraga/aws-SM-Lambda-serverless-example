@@ -32,37 +32,40 @@ resources:
 
   Resources:
     LambdaExecutionRole:
-      Type: AWS::IAM::Role
+      Type: "AWS::IAM::Role"
       Properties:
-        RoleName:
-          Ref: LambdaExecutionRoleName
+        RoleName: test-Lambda-Exec-Role
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-              - lambda.amazonaws.com
-            Action:
-            - sts:AssumeRole
+            -
+              Effect: "Allow"
+              Principal:
+                Service:
+                  - "lambda.amazonaws.com"
+              Action:
+                - "sts:AssumeRole"
         Path: "/"
-    LambdaRolePolicy:
-      Type: AWS::IAM::ManagedPolicy
-      DependsOn:
-      - LambdaExecutionRole
-      Properties:
-        ManagedPolicyName:
-          Ref: LambdaExecutionPolicyName
-        Roles:
-        - Ref: LambdaExecutionRole
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Sid: LambdaAssumeRolePolicy
-            Effect: Allow
-            Action:
-            - sts:*
-            Resource: "*"
+        Policies:
+          -
+            PolicyName: test-Lambda-Exec-Policy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                -
+                  Sid: VisualEditor0
+                  Effect: Allow
+                  Action:
+                      - 'ec2:*'
+                      - 'dynamodb:*'
+                      - 'ses:SendEmail'
+                      - 'ses:SendRawEmail'
+                      - 'ses:SendTemplatedEmail'
+                      - 'logs:CreateLogStream'
+                      - 'logs:DescribeLogGroups'
+                      - 'logs:CreateLogGroup'
+                      - 'logs:PutLogEvents'
+                  Resource: '*'
 
 plugins:
   - serverless-python-requirements
@@ -75,7 +78,10 @@ functions:
     handler: lambda_function_1.lambda_handler
     memorySize: 256
     timeout: 400
-    role: arn:aws:iam::${self:custom.aws-account-id}:role/${self:custom.lambda-role-name}
+    role:
+      Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
 #    vpc: ## Select VPC options if required
 #      securityGroupIds: ${self:custom.cbcap-lambda-sgs}
 #      subnetIds: ${self:custom.cbcap-lambda-subnets}
@@ -88,7 +94,10 @@ functions:
     handler: lambda_function_2.lambda_handler
     memorySize: 256
     timeout: 400
-    role: arn:aws:iam::${self:custom.aws-account-id}:role/${self:custom.lambda-role-name}
+    role:
+      Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
     versionFunctions: false
     environment:  ## Lambda Function Environment Vars
       awsAccountID: ${self:custom.aws-account-id}
@@ -99,7 +108,10 @@ functions:
     handler: lambda_function_3.lambda_handler
     memorySize: 256
     timeout: 400
-    role: arn:aws:iam::${self:custom.aws-account-id}:role/${self:custom.lambda-role-name}
+    role:
+      Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
     versionFunctions: false
     environment:  ## Lambda Function Environment Vars
       awsAccountID: ${self:custom.aws-account-id}
