@@ -34,7 +34,7 @@ resources:
     LambdaExecutionRole:
       Type: "AWS::IAM::Role"
       Properties:
-        RoleName: test-Lambda-Exec-Role
+        RoleName: Test-Lambda-Exec-Role-for-SM
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:
@@ -48,7 +48,7 @@ resources:
         Path: "/"
         Policies:
           -
-            PolicyName: test-Lambda-Exec-Policy
+            PolicyName: Test-Lambda-Exec-Policy-for-SM
             PolicyDocument:
               Version: '2012-10-17'
               Statement:
@@ -57,10 +57,6 @@ resources:
                   Effect: Allow
                   Action:
                       - 'ec2:*'
-                      - 'dynamodb:*'
-                      - 'ses:SendEmail'
-                      - 'ses:SendRawEmail'
-                      - 'ses:SendTemplatedEmail'
                       - 'logs:CreateLogStream'
                       - 'logs:DescribeLogGroups'
                       - 'logs:CreateLogGroup'
