@@ -4,7 +4,7 @@ This repo provides an example on creating AWS Step Functions using Serverless Fr
 
 ### Prerequisites
 - Set-Up and Configure AWS-CLI with access-key and secret-key. 
-- Node/NPM is the prerequisite for installing serverless. The installation steps can be found here for [node-debian](https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/) and [node-centos](https://tecadmin.net/install-latest-nodejs-and-npm-on-centos/)
+- Node/NPM is the prerequisite for installing serverless. The installation steps can be found here for [node-debian](https://tecadmin.net/install-latest-nodejs-npm-on-ubuntu/) and [node-centos](https://tecadmin.net/install-latest-nodejs-and-npm-on-centos/).
 - Use the following command to install serverless.
 ```sh
 $ npm -g insall serverless 
